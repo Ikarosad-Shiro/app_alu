@@ -16,8 +16,8 @@
         android:id="@+id/transparent_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000" /> <!-- Semitransparente negro -->
-    <!-- Logo -->
+        android:background="#80000000" />
+
 
     <!-- Contenido del formulario -->
     <LinearLayout
@@ -30,7 +30,6 @@
             android:id="@+id/logo"
             android:layout_width="231dp"
             android:layout_height="190dp"
-            android:layout_gravity="parent"
             android:layout_marginTop="16dp"
             android:src="@drawable/img_1" />
 
