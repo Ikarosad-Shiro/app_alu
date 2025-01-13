@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "51499677632",
-    "project_id": "prueba-alupratic",
-    "storage_bucket": "prueba-alupratic.firebasestorage.app"
+    "project_number": "675051004479",
+    "project_id": "alupratic-cf4ef",
+    "storage_bucket": "alupratic-cf4ef.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:51499677632:android:9e8ac4eb7da7a6babefa25",
+        "mobilesdk_app_id": "1:675051004479:android:2431e2876dbb7bfa9a4e8a",
         "android_client_info": {
           "package_name": "com.example.aluasistencias"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAk_5prkYCsKNaX8U614ZPxR6dB1HwGlLw"
+          "current_key": "AIzaSyCm998Cocz2K4Lc8L_7fE5LqbfYk6cpWrk"
         }
       ],
       "services": {
