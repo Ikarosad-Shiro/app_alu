@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Iniciando sesión...", Toast.LENGTH_SHORT).show();
 
                 // Simular inicio de sesión exitoso
-                Intent intent = new Intent(MainActivity.this, MainActivity.class); // Cambia DashboardActivity a la actividad de tu dashboard
+                Intent intent = new Intent(MainActivity.this, VistaMapa.class); // Cambia DashboardActivity a la actividad de tu dashboard
                 startActivity(intent);
             }
         });
