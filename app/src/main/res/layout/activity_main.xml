@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="#80000000" />
 
-    <!-- Logo -->
+    <!-- Logo de la empresa-->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="231dp"
