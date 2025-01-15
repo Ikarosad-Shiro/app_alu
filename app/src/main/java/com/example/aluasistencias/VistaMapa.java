@@ -2,7 +2,6 @@ package com.example.aluasistencias;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -11,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,11 +23,15 @@ public class VistaMapa extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap map;
     private LatLng currentLocation;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vista_mapa);
+
+        // Inicializar el cliente de ubicación
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Configurar el fragmento del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_container);
@@ -34,9 +39,11 @@ public class VistaMapa extends AppCompatActivity implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-        // Configurar botones (sin funcionalidad adicional)
+        // Configurar botones
         Button saveLocationButton = findViewById(R.id.btn_save_location);
-        saveLocationButton.setOnClickListener(v -> Toast.makeText(this, "Funcionalidad no implementada.", Toast.LENGTH_SHORT).show());
+        saveLocationButton.setOnClickListener(v ->
+                Toast.makeText(this, "Funcionalidad no implementada.", Toast.LENGTH_SHORT).show()
+        );
 
         Button backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(v -> finish());
@@ -46,7 +53,7 @@ public class VistaMapa extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
 
-        // Configurar gestos y tipo de mapa inicial
+        // Configurar el mapa
         map.getUiSettings().setZoomGesturesEnabled(true);
         map.getUiSettings().setScrollGesturesEnabled(true);
         map.getUiSettings().setZoomControlsEnabled(true);
@@ -69,9 +76,15 @@ public class VistaMapa extends AppCompatActivity implements OnMapReadyCallback {
     private void enableUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
-            map.setOnMyLocationChangeListener(location -> {
-                currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+
+            // Obtener la última ubicación conocida
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+                if (location != null) {
+                    currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                } else {
+                    Toast.makeText(this, "No se pudo obtener la ubicación actual.", Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }
