@@ -64,19 +64,20 @@ public class MainActivity extends AppCompatActivity {
             if (email.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             } else {
-                // Iniciar sesión con Firebase
-                mAuth.signInWithEmailAndPassword(email, pass)
+                // Verificar si el correo está registrado antes de intentar iniciar sesión
+                mAuth.fetchSignInMethodsForEmail(email)
                         .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                // Inicio de sesión exitoso
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(MainActivity.this, "Bienvenido, " + (user != null ? user.getEmail() : "Usuario"), Toast.LENGTH_SHORT).show();
-
-                                // Redirigir al menú
-                                navigateToMenu();
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                boolean emailExists = task.getResult().getSignInMethods() != null && !task.getResult().getSignInMethods().isEmpty();
+                                if (emailExists) {
+                                    // Intentar iniciar sesión si el correo está registrado
+                                    loginUser(email, pass);
+                                } else {
+                                    // El correo no está registrado
+                                    Toast.makeText(MainActivity.this, "El correo no está registrado. Por favor verifica o regístrate.", Toast.LENGTH_SHORT).show();
+                                }
                             } else {
-                                // Error en el inicio de sesión
-                                Toast.makeText(MainActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Error al verificar el correo. Intenta nuevamente.", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -87,6 +88,35 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
+    }
+
+    /**
+     * Método para intentar iniciar sesión.
+     */
+    private void loginUser(String email, String pass) {
+        mAuth.signInWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Inicio de sesión exitoso
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(MainActivity.this, "Bienvenido, " + (user != null ? user.getEmail() : "Usuario"), Toast.LENGTH_SHORT).show();
+
+                        // Redirigir al menú
+                        navigateToMenu();
+                    } else {
+                        // Manejar errores en el inicio de sesión
+                        String errorMessage = "Error desconocido";
+                        if (task.getException() != null) {
+                            String errorCode = task.getException().getMessage();
+                            if (errorCode != null && errorCode.contains("password is invalid")) {
+                                errorMessage = "Contraseña incorrecta. Intenta nuevamente.";
+                            } else if (errorCode != null && errorCode.contains("no user record")) {
+                                errorMessage = "El correo no está registrado. Por favor verifica o regístrate.";
+                            }
+                        }
+                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
