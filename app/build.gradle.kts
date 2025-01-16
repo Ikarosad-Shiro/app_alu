@@ -48,5 +48,4 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
 
 
-
 }
