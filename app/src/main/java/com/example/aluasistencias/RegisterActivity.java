@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -46,28 +47,38 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (password.length() < 6) {
                 Toast.makeText(RegisterActivity.this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
             } else {
-                // Registro de usuario con Firebase
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(RegisterActivity.this, "¡Registro exitoso!", Toast.LENGTH_SHORT).show();
-
-                                // Redirigir a la actividad principal después del registro exitoso
-                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish(); // Finalizar actividad actual
-                            } else {
-                                // Mostrar error si el registro falla
-                                Toast.makeText(RegisterActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                registerUser(email, password);
             }
         });
 
         // Lógica del botón Cancelar
-        btnCancel.setOnClickListener(view -> {
-            // Cierra la actividad actual y regresa a la pantalla anterior
-            finish();
-        });
+        btnCancel.setOnClickListener(view -> finish());
+    }
+
+    private void registerUser(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            user.sendEmailVerification()
+                                    .addOnCompleteListener(emailTask -> {
+                                        if (emailTask.isSuccessful()) {
+                                            Toast.makeText(RegisterActivity.this, "¡Registro exitoso! Verifica tu correo antes de iniciar sesión.", Toast.LENGTH_SHORT).show();
+                                            mAuth.signOut(); // Cerrar sesión después del registro
+                                            // Redirigir a la pantalla de inicio de sesión
+                                            startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, "Error al enviar el correo de verificación.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    } else {
+                        // Mostrar error si el registro falla
+                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "Error desconocido";
+                        Toast.makeText(RegisterActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
