@@ -1,6 +1,7 @@
 package com.example.aluasistencias;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -48,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         // Inicializar FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
 
-        // **Cerrar sesión activa al iniciar la aplicación**
-        mAuth.signOut();
+        // Verificar si el usuario ya tiene sesión activa
+        checkLoginSession();
 
         // Vincular vistas con sus IDs
         username = findViewById(R.id.username);
@@ -78,6 +79,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Verificar si ya existe una sesión activa utilizando SharedPreferences.
+     */
+    private void checkLoginSession() {
+        SharedPreferences preferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String userEmail = preferences.getString("userEmail", "");
+
+        if (!userEmail.isEmpty()) {
+            Log.d(TAG, "Sesión activa para: " + userEmail);
+            navigateToMenu();
+        }
+    }
+
+    /**
      * Método para intentar iniciar sesión.
      */
     private void loginUser(String email, String pass) {
@@ -90,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
                             // Correo verificado, permitir el acceso
                             Log.d(TAG, "Inicio de sesión exitoso para: " + email);
                             Toast.makeText(MainActivity.this, "Bienvenido, " + user.getEmail(), Toast.LENGTH_SHORT).show();
+
+                            // Guardar sesión en SharedPreferences
+                            saveLoginSession(email);
+
                             navigateToMenu();
                         } else if (user != null && !user.isEmailVerified()) {
                             // Correo no verificado
@@ -115,6 +133,17 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    /**
+     * Guardar sesión de usuario en SharedPreferences.
+     */
+    private void saveLoginSession(String email) {
+        SharedPreferences preferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("userEmail", email);
+        editor.apply();
+        Log.d(TAG, "Sesión guardada para: " + email);
     }
 
     /**
