@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F8F9FA">
+
+    <!-- Campo para el nombre del cliente -->
+    <EditText
+        android:id="@+id/clientNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del Cliente"
+        android:inputType="text"
+        android:minHeight="48dp" /> <!-- Aumentado el tamaño de la altura mínima -->
+
+    <!-- Contenedor dinámico para la lista de productos -->
+    <LinearLayout
+        android:id="@+id/productContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+        <!-- Aquí se agregarán dinámicamente los campos de productos -->
+    </LinearLayout>
+
+    <!-- Botón para agregar más productos -->
+    <Button
+        android:id="@+id/addProductButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Agregar Producto"
+        android:layout_marginTop="8dp"
+        android:minHeight="48dp"
+        android:padding="12dp" />
+
+    <!-- Campo para la dirección -->
+    <EditText
+        android:id="@+id/addressInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dirección"
+        android:inputType="text"
+        android:enabled="false"
+        android:minHeight="48dp"/>
+
+    <!-- Botón para abrir el mapa -->
+    <Button
+        android:id="@+id/openMapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar Ubicación en el Mapa"
+        android:layout_marginTop="16dp"
+        android:minHeight="48dp"
+        android:padding="12dp" />
+
+    <!-- Botón para guardar el registro -->
+    <Button
+        android:id="@+id/saveRecordButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar Registro"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/white"
+        android:minHeight="48dp"
+        android:padding="12dp" /> <!-- Aumento de padding -->
+</LinearLayout>
