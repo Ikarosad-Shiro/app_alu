@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Contenedor para el mapa de Google -->
+    <!-- Contenedor para el mapa de Google-->
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"

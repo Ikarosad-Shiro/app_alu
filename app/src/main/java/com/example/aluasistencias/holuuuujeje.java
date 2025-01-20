@@ -1,2 +1,4 @@
-package com.example.aluasistencias;public class holuuuujeje {
+package com.example.aluasistencias;
+
+public class holuuuujeje {
 }
