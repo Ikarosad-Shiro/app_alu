@@ -11,7 +11,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/aluminio" />
 
-    <!-- Fondo semitransparente -->
+    <!-- Fondo semitransparente, dentro de la pantalla -->
     <View
         android:id="@+id/transparent_overlay"
         android:layout_width="match_parent"

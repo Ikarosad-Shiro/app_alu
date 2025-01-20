@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Alu Asistencias</string>
+<<<<<<< HEAD
+    <string name="google_maps_api_key">AIzaSyAtfXT9CzBy3ns8zRyTmZIyFUbvz3_fsz4</string>
+=======
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <string name="google_maps_key">AIzaSyDQdshjnmu9zDNLTeAJOUQ_TfkI4U1t9OY</string>
     <string name="title_activity_maps">Maps</string>
 
+>>>>>>> origin/fernando
 </resources>
