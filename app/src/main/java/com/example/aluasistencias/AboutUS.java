@@ -1,4 +1,4 @@
 package com.example.aluasistencias;
 
-public class CambiodeNombre {
+public class AboutUS {
 }
