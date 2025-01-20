@@ -1,5 +1,6 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -39,7 +40,19 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.constraintlayout.v214)
     testImplementation(libs.junit)
+<<<<<<< HEAD
     androidTestImplementation(libs.junit.v115)
     androidTestImplementation(libs.espresso.core.v351)
 }
+=======
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    implementation("com.google.android.material:material:1.9.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:18.0.0")
+>>>>>>> origin/fernando
 
