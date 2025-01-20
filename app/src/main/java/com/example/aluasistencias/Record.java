@@ -10,7 +10,7 @@ public class Record {
     private double latitude; // Latitud
     private double longitude; // Longitud
 
-    // Constructor principal
+    // Constructor principal, de acuerdo con los id de los provedores y rutas
     public Record(int id, String clientName, String productList, int isCompleted, String address, double latitude, double longitude) {
         this.id = id;
         this.clientName = clientName;
@@ -34,6 +34,8 @@ public class Record {
         this.longitude = longitude; // Longitud
     }
 
+
+    //Correción de metodos, para el reinicio
     // Getter y Setter para id
     public int getId() {
         return id;
