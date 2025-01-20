@@ -66,17 +66,8 @@ public class MainActivity extends AppCompatActivity {
             if (email.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             } else {
-<<<<<<< HEAD
-                // Aquí puedes agregar la lógica de autenticación
-                Toast.makeText(MainActivity.this, "Iniciando sesión...", Toast.LENGTH_SHORT).show();
-
-                // Simular inicio de sesión exitoso
-                Intent intent = new Intent(MainActivity.this, VistaMapa.class); // Cambia DashboardActivity a la actividad de tu dashboard
-                startActivity(intent);
-=======
                 // Intentar iniciar sesión directamente
                 loginUser(email, pass);
->>>>>>> origin/fernando
             }
         });
 
