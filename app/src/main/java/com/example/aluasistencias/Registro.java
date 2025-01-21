@@ -95,8 +95,10 @@ public class Registro extends AppCompatActivity {
             return false;
         }
 
-
-
+        if (!password.equals(confirmPassword)) {
+            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+            return false;
+}
 
         return true;
     }
