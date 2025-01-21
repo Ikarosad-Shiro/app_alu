@@ -95,7 +95,7 @@ public class Menu extends AppCompatActivity {
     }
 
     private void setupButtonsForHabilitado() {
-        Button btnRepartir = findViewById(R.id.btn_repartir);
+        Button btnRepartir = findViewById(R.id.btn_login);
         Button btnVerReparto = findViewById(R.id.btn_ver_reparto);
 
         btnRepartir.setOnClickListener(v -> {
