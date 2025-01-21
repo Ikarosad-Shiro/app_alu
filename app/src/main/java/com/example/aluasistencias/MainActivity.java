@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (!userEmail.isEmpty()) {
             Log.d(TAG, "Sesión activa para: " + userEmail);
-            ;
+
+            navigateToMenu();
         }
     }
 
@@ -108,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
                             // Guardar sesión en SharedPreferences
                             saveLoginSession(email);
-
 
                         } else if (user != null && !user.isEmailVerified()) {
                             // Correo no verificado
@@ -148,18 +148,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Navega al menú principal de la aplicación.
-     * Finaliza la actividad actual para evitar que permanezca en la pila.
+     * Método para redirigir al menú principal.
      */
     private void navigateToMenu() {
-        // Crear un intento para abrir la actividad "Menu"
-        Intent intent = new Intent(this, Menu.class);
-
-        // Iniciar la nueva actividad
+        Intent intent = new Intent(MainActivity.this, Menu.class);
         startActivity(intent);
-
-        // Finalizar la actividad actual para liberar recursos y evitar duplicados en la pila
-        finish();
+        finish(); // Finalizar esta actividad para que no esté en la pila de actividades
     }
 
 
