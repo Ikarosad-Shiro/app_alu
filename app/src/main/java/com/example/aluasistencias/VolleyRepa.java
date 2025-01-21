@@ -1,180 +1,195 @@
 package com.example.aluasistencias;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Patterns;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
+import android.util.Log;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import com.android.volley.toolbox.Volley;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class Registro extends AppCompatActivity {
+public class VolleyRepa {
 
-    private EditText etName, etEmail, etPassword, etConfirmPassword;
-    private Spinner spRole;
-    private Button btnRegister, btnCancel;
-    private FirebaseAuth mAuth;
+    private static RequestQueue requestQueue;
+    private Context context;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro);
-
-        // Inicializar FirebaseAuth
-        mAuth = FirebaseAuth.getInstance();
-
-        // Vinculación de vistas
-        etName = findViewById(R.id.et_full_name);
-        spRole = findViewById(R.id.sp_role);
-        etEmail = findViewById(R.id.et_email);
-        etPassword = findViewById(R.id.et_password);
-        etConfirmPassword = findViewById(R.id.et_confirm_password);
-        btnRegister = findViewById(R.id.btn_register);
-        btnCancel = findViewById(R.id.btn_cancel);
-
-        // Configuración del Spinner de roles
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.roles_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spRole.setAdapter(adapter);
-
-        // Lógica del botón Registrarse
-        btnRegister.setOnClickListener(view -> {
-            String name = etName.getText().toString().trim();
-            String email = etEmail.getText().toString().trim();
-            String password = etPassword.getText().toString();
-            String confirmPassword = etConfirmPassword.getText().toString();
-            String role = spRole.getSelectedItem().toString();
-
-            if (!validarCampos(name, email, password, confirmPassword)) {
-                return;
-            }
-
-            registerUserFirebase(name, email, password, role);
-        });
-
-        // Lógica del botón Cancelar
-        btnCancel.setOnClickListener(view -> finish());
+    public VolleyRepa(Context context) {
+        this.context = context;
+        this.requestQueue = Volley.newRequestQueue(context);
     }
 
-    private boolean validarCampos(String name, String email, String password, String confirmPassword) {
-        if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "Por favor, ingresa tu nombre", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Por favor, ingresa tu correo electrónico", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Por favor, ingresa un correo electrónico válido", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Por favor, ingresa una contraseña", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (password.length() < 6) {
-            Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        if (!password.equals(confirmPassword)) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
+    // Método para obtener la cola de solicitudes
+    public RequestQueue getRequestQueue() {
+        return requestQueue;
     }
 
-    private void registerUserFirebase(String name, String email, String password, String role) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            String idUsuario = user.getUid(); // Obtener UID de Firebase
-                            user.sendEmailVerification()
-                                    .addOnCompleteListener(emailTask -> {
-                                        if (emailTask.isSuccessful()) {
-                                            Toast.makeText(Registro.this, "¡Registro exitoso! Verifica tu correo antes de iniciar sesión.", Toast.LENGTH_SHORT).show();
-                                            mAuth.signOut();
+    // Método para obtener datos del usuario
+    public void obtenerUsuario(String IdUsuario, final VolleyCallback callback) {
+        String url = "http://192.168.212.7/BackAlu/Backend/Repartidor.php";
 
-                                            agregarUsuarioSQLite(idUsuario, name, email, password, role);
-
-                                            String nick = email.length() >= 6 ? email.substring(0, 6) : email;
-
-                                            agregarUsuarioMariaDB(idUsuario, name, role, email, nick, password);
-
-                                            startActivity(new Intent(Registro.this, MainActivity.class));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(Registro.this, "Error al enviar el correo de verificación.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-                    } else {
-                        String errorMessage = task.getException() != null ? task.getException().getMessage() : "Error desconocido";
-                        Toast.makeText(Registro.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void agregarUsuarioSQLite(String idUsuario, String name, String email, String password, String role) {
-        OpenHelper dbHelper = new OpenHelper(this);
-        String estado = "Deshabilitado";
-        dbHelper.insertarUsuario(idUsuario, role, email, name, password, estado);
-    }
-
-    private void agregarUsuarioMariaDB(String idUsuario, String name, String rol, String email, String nick, String pass) {
-        String url = "http://192.168.212.7/BackAlu/Backend/registro.php";
-
-        VolleyRepa volleyRepa = new VolleyRepa(this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String message = jsonResponse.getString("message");
+                    Log.d("VolleyResponse", response);
 
-                        if (message.equalsIgnoreCase("success")) {
-                            Toast.makeText(this, "Usuario agregado en MariaDB", Toast.LENGTH_SHORT).show();
+                    try {
+                        // Intentamos analizar la respuesta como un JSONObject
+                        JSONObject jsonResponse = new JSONObject(response);
+
+                        // Verificamos si hay un campo "message" en la respuesta
+                        if (jsonResponse.has("message")) {
+                            // Si la respuesta contiene un mensaje de error
+                            String message = jsonResponse.getString("message");
+                            callback.onError(message);
                         } else {
-                            Toast.makeText(this, "Error en el registro: " + message, Toast.LENGTH_SHORT).show();
+                            // Si la respuesta contiene los datos del usuario
+                            String nick = jsonResponse.getString("nick");
+                            String estado = jsonResponse.getString("estado");
+                            String nombreCompleto = jsonResponse.getString("Nombre_completo");
+                            String rol = jsonResponse.getString("rol");
+                            String email = jsonResponse.getString("email");
+
+                            // Crear una respuesta con los datos del usuario
+                            String usuarioInfo = "{\"nick\":\"" + nick + "\", \"estado\":\"" + estado + "\", "
+                                    + "\"nombreCompleto\":\"" + nombreCompleto + "\", "
+                                    + "\"rol\":\"" + rol + "\", "
+                                    + "\"email\":\"" + email + "\"}";
+
+                            callback.onSuccess(usuarioInfo);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "Error al procesar la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                        callback.onError("Error al procesar los datos.");
                     }
                 },
-                error -> Toast.makeText(this, "Error en la conexión: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
+                error -> callback.onError("Error en la conexión: " + error.getMessage())
+        ) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("IdUsuario", idUsuario);
-                params.put("Nombre_completo", name);
-                params.put("rol", rol);
-                params.put("email", email);
-                params.put("nick", nick);
-                params.put("pass", pass);
-                params.put("estado", "Deshabilitado");
+                params.put("IdUsuario", IdUsuario);  // Asegúrate de usar el nombre correcto del parámetro
                 return params;
             }
         };
 
-        volleyRepa.getRequestQueue().add(stringRequest);
+        requestQueue.add(stringRequest);
+    }
+
+    // Método para obtener los repartos con fechas
+    public static void obtenerRepartos(String IdUsuario, final VolleyCallback callback) {
+        String url = "http://192.168.212.7/BackAlu/Backend/Repartos.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("VolleyResponse", response);
+
+                        try {
+                            // Verificar si la respuesta es un mensaje de error
+                            if (response.contains("No se encontraron repartos")) {
+                                callback.onSuccess("{\"message\":\"No se encontraron repartos\"}");
+                                return;
+                            }
+
+                            // Aquí manejamos la respuesta como un JSONArray
+                            JSONArray jsonArray = new JSONArray(response);
+
+                            // Crear un StringBuilder para almacenar los datos formateados
+                            StringBuilder repartos = new StringBuilder();
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                // Extraemos los datos del JSON
+                                String direccion = jsonArray.getJSONObject(i).getString("Direccion_entrega");
+                                String estatus = jsonArray.getJSONObject(i).getString("Estatus");
+                                String anotaciones = jsonArray.getJSONObject(i).getString("Anotaciones");
+                                String fechaInicio = jsonArray.getJSONObject(i).getString("FechaInicio");
+                                String fechaEntrega = jsonArray.getJSONObject(i).getString("FechaEntrega");
+
+                                // Formateamos la respuesta con los datos completos
+                                repartos.append("Reparto " + (i + 1) + ": " + direccion + " - " + estatus + " - " + anotaciones
+                                        + " - Fecha Inicio: " + fechaInicio + " - Fecha Entrega: " + fechaEntrega + "\n");
+                            }
+
+                            // Devolvemos la cadena con los repartos
+                            callback.onSuccess(repartos.toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback.onError("Error al procesar los datos.");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError("Error en la conexión: " + error.getMessage());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("IdUsuario", IdUsuario);
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
+
+    public void actualizarEstadoReparto(String IdReparto, String nuevoEstado, final VolleyCallback callback) {
+        String url = "http://192.168.212.7/BackAlu/Backend/NuevoEstado.php";
+
+        // Crear el JSON para enviar
+        JSONObject params = new JSONObject();
+        try {
+            params.put("IdReparto", IdReparto);
+            params.put("estado", nuevoEstado);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Realizar la solicitud POST
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Verifica si la respuesta contiene un mensaje de éxito
+                            if (response.has("message")) {
+                                String message = response.getString("message");
+                                callback.onSuccess(message);  // Llamar onSuccess con el mensaje
+                            } else {
+                                callback.onError("Error: No se pudo actualizar el estado.");
+                            }
+                        } catch (JSONException e) {
+                            callback.onError("Error al procesar la respuesta.");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.toString());
+                    }
+                });
+
+        // Agregar la solicitud a la cola de Volley
+        Volley.newRequestQueue(context).add(request);
+    }
+
+
+
+    // Interfaz para manejar el resultado o error de la solicitud
+    public interface VolleyCallback {
+        void onSuccess(String response);
+        void onError(String error);
     }
 }
