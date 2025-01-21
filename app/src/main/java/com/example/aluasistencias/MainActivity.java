@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         checkLoginSession();
 
         // Vincular vistas con sus IDs
+        //Verificar si les muestra error a los demas
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btn_login);
