@@ -67,7 +67,7 @@ public class Menujava extends AppCompatActivity {
             return true;
         });
 
-        // Configurar RecyclerView para mostrar registros
+        // Configurar RecyclerView para mostrar registros dentro de la app
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         dbHelper = new DatabaseHelper(this);
         recordAdapter = new RecordAdapter(recordList, this);
