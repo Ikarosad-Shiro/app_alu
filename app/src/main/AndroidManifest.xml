@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.aluasistencias">
+    xmlns:tools="http://schemas.android.com/tools">
 
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Permisos necesarios -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AluAsistencias"
@@ -21,38 +22,35 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDQdshjnmu9zDNLTeAJOUQ_TfkI4U1t9OY" />
+            android:value="@string/google_maps_api_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-        <!-- Registra la actividad AddRecordActivity -->
-        <activity
-            android:name=".AddRecordActivity"
+            android:name=".RepartoActual"
             android:exported="false" />
-
-        <!-- Registra la actividad Menujava -->
         <activity
-            android:name=".Menujava"
+            android:name=".AboutUs"
             android:exported="false" />
-
-        <!-- Registra la actividad RegisterActivity -->
         <activity
-            android:name=".RegisterActivity"
+            android:name=".HistorialRepartos"
             android:exported="false" />
-
-        <!-- Registra la actividad EditRecordActivity -->
         <activity
-            android:name=".EditRecordActivity"
+            android:name=".PerfilRepartidor"
             android:exported="false" />
-
+        <activity
+            android:name=".Repartos"
+            android:exported="false" />
+        <activity
+            android:name=".Menu"
+            android:exported="false" />
+        <activity
+            android:name=".Registro"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
