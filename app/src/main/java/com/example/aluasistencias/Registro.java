@@ -39,7 +39,14 @@ public class Registro extends AppCompatActivity {
         // Inicializar FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
 
-
+// Vinculación de vistas
+        etName = findViewById(R.id.et_full_name);
+        spRole = findViewById(R.id.sp_role);
+        etEmail = findViewById(R.id.et_email);
+        etPassword = findViewById(R.id.et_password);
+        etConfirmPassword = findViewById(R.id.et_confirm_password);
+        btnRegister = findViewById(R.id.btn_register);
+        btnCancel = findViewById(R.id.btn_cancel);
 
 
 
