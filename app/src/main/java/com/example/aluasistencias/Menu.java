@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -29,6 +29,7 @@ public class Menu extends AppCompatActivity {
 
         // Inicializar el DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
+
         // Configurar el ActionBarDrawerToggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, R.string.open, R.string.close);

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Manejar clic en el texto de registro
         tvRegister.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            Intent intent = new Intent(MainActivity.this, Registro.class);
             startActivity(intent);
         });
     }
@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!userEmail.isEmpty()) {
             Log.d(TAG, "Sesión activa para: " + userEmail);
+
             navigateToMenu();
         }
     }
@@ -109,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                             // Guardar sesión en SharedPreferences
                             saveLoginSession(email);
 
-                            navigateToMenu();
                         } else if (user != null && !user.isEmailVerified()) {
                             // Correo no verificado
                             Log.w(TAG, "Correo no verificado: " + email);
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Guardar sesión de usuario en SharedPreferences.
+     * Guardar sesión de usuario en SharedPreferences .
      */
     private void saveLoginSession(String email) {
         SharedPreferences preferences = getSharedPreferences("UserSession", MODE_PRIVATE);
@@ -151,8 +151,11 @@ public class MainActivity extends AppCompatActivity {
      * Método para redirigir al menú principal.
      */
     private void navigateToMenu() {
-        Intent intent = new Intent(MainActivity.this, Menujava.class);
+        Intent intent = new Intent(MainActivity.this, Menu.class);
         startActivity(intent);
         finish(); // Finalizar esta actividad para que no esté en la pila de actividades
     }
+
+
+
 }

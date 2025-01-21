@@ -94,12 +94,10 @@ public class Registro extends AppCompatActivity {
             Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (!password.equals(confirmPassword)) {
             Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
             return false;
-}
-
+        }
         return true;
     }
 
