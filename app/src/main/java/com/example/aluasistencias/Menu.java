@@ -29,8 +29,11 @@ public class Menu extends AppCompatActivity {
 
         // Inicializar el DrawerLayout
         drawerLayout = findViewById(R.id.drawer_layout);
-
-
+        // Configurar el ActionBarDrawerToggle
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         // Inicializar los TextViews
         welcomeText = findViewById(R.id.welcome_text);
